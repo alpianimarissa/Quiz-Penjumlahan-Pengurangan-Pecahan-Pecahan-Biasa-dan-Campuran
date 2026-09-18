@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif Petualangan Pecahan SD Kelas 5 - 40 Soal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3, .font-fredoka {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        /* Style Pecahan Matematika Visual */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: 700;
+            padding: 0 4px;
+        }
+        .frac .top {
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 1px;
+            line-height: 1.1;
+        }
+        .frac .bottom {
+            padding-top: 1px;
+            line-height: 1.1;
+        }
+        /* Custom scrollbar for question grid */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-md">
+                    <i class="fa-solid fa-brain text-2xl text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-2xl font-bold tracking-wide">Petualangan Pecahan SD Kelas 5</h1>
+                    <p class="text-xs text-indigo-100 hidden sm:block">Terurut: Soal Langsung & Cerita (Pecahan Biasa → Pecahan Campuran)</p>
+                </div>
+            </div>
+
+            <!-- Auto-save Status Indicator -->
+            <div class="flex items-center space-x-2 bg-white/10 px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm border border-white/20">
+                <i class="fa-solid fa-cloud-arrow-up text-emerald-300 animate-pulse"></i>
+                <span id="save-status">Tersimpan Otomatis</span>
+            </div>
+        </div>
+
+        <!-- Top Progress Bar -->
+        <div class="w-full bg-indigo-950/40 h-2">
+            <div id="top-progress-bar" class="bg-yellow-400 h-2 transition-all duration-300 w-0"></div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full px-4 py-6 flex-grow grid md:grid-cols-3 gap-6">
+
+        <!-- Left / Navigation Panel (1/3 width on desktop) -->
+        <div class="md:col-span-1 space-y-4">
+            <!-- Score & Progress Summary Box -->
+            <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-slate-700 text-sm flex items-center">
+                        <i class="fa-solid fa-chart-pie text-indigo-500 mr-2"></i> Progres Kuis
+                    </h2>
+                    <button onclick="promptResetQuiz()" class="text-xs text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-rotate-right"></i> Reset
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-indigo-50 p-3 rounded-2xl border border-indigo-100">
+                        <span class="text-[11px] text-indigo-600 font-bold block">Terjawab</span>
+                        <span id="stat-answered" class="text-xl font-black text-indigo-900">0 / 40</span>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                        <span class="text-[11px] text-emerald-600 font-bold block">Skor Saat Ini</span>
+                        <span id="stat-score" class="text-xl font-black text-emerald-700">0</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Grid (1 - 40) -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-500">Navigasi Soal (1 - 40):</span>
+                        <span class="text-[10px] text-slate-400">Klik untuk lompat</span>
+                    </div>
+                    <div id="nav-grid" class="grid grid-cols-5 gap-1.5 max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                        <!-- 40 Dynamic Buttons generated via JS -->
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px] font-semibold text-slate-600">
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block"></span> Benar</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-rose-500 rounded-full inline-block"></span> Salah</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-indigo-600 rounded-full inline-block"></span> Sedang Dibuka</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-200 rounded-full inline-block"></span> Belum Diisi</div>
+                </div>
+            </div>
+
+            <!-- Finish Quiz Button -->
+            <button onclick="finishQuiz()" class="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-flag-checkered text-yellow-300 text-base"></i>
+                <span>Selesaikan & Lihat Rekap</span>
+            </button>
+        </div>
+
+        <!-- Right / Question Panel (2/3 width on desktop) -->
+        <div class="md:col-span-2 space-y-4">
+            
+            <!-- Question Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6 relative">
+                
+                <!-- Question Header -->
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-100 pb-4 gap-2">
+                    <span id="question-badge" class="px-3.5 py-1.5 bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check"></i> Soal Nomor 1 dari 40
+                    </span>
+                    <span id="question-type-tag" class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold rounded-xl">
+                        Penjumlahan Pecahan
+                    </span>
+                </div>
+
+                <!-- Question Prompt -->
+                <div class="space-y-3">
+                    <p id="prompt-subtitle" class="text-xs sm:text-sm text-slate-500 font-medium">Hitunglah dan pilih jawaban dalam <strong class="text-indigo-600">bentuk paling sederhana</strong>:</p>
+                    <div id="question-text" class="text-lg sm:text-2xl font-bold text-slate-800 p-4 sm:p-6 text-center bg-slate-50 rounded-2xl border border-slate-100 leading-relaxed">
+                        <!-- Dynamic Fraction Question Text -->
+                    </div>
+                </div>
+
+                <!-- Multiple Choice Options -->
+                <div id="options-container" class="grid sm:grid-cols-2 gap-3">
+                    <!-- Dynamic Option Buttons -->
+                </div>
+
+                <!-- Immediate Feedback / Explanation Box -->
+                <div id="explanation-box" class="hidden p-4 sm:p-5 rounded-2xl border text-xs sm:text-sm space-y-2 transition-all">
+                    <!-- Dynamic Explanation Text -->
+                </div>
+
+                <!-- Bottom Question Navigation Controls -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                    <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl transition flex items-center space-x-2 shadow-md">
+                        <span>Selanjutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Final Results Modal -->
+    <div id="results-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-6 animate-scale-up">
+            <div class="w-20 h-20 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                <i id="result-icon" class="fa-solid fa-trophy"></i>
+            </div>
+            
+            <div>
+                <h2 id="result-title" class="text-2xl font-bold text-slate-800">Hasil Kuis Petualangan</h2>
+                <p id="result-subtitle" class="text-xs text-slate-500 mt-1">Berikut rekap performa belajarmu untuk 40 soal pecahan</p>
+            </div>
+
+            <!-- Score Cards Grid -->
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-indigo-50 p-3 rounded-2xl border border-indigo-100">
+                    <span class="text-[10px] text-indigo-600 font-bold uppercase block">Nilai</span>
+                    <span id="final-score" class="text-2xl font-black text-indigo-700">0</span>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                    <span class="text-[10px] text-emerald-600 font-bold uppercase block">Benar</span>
+                    <span id="final-correct" class="text-2xl font-black text-emerald-600">0</span>
+                </div>
+                <div class="bg-rose-50 p-3 rounded-2xl border border-rose-100">
+                    <span class="text-[10px] text-rose-600 font-bold uppercase block">Salah</span>
+                    <span id="final-wrong" class="text-2xl font-black text-rose-600">0</span>
+                </div>
+            </div>
+
+            <p id="result-message" class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-200 leading-relaxed">
+                Pesan motivasi...
+            </p>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
+                    Periksa Jawaban
+                </button>
+                <button onclick="resetQuiz()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shadow-md">
+                    Ulangi Kuis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Reset Confirmation Modal -->
+    <div id="reset-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center space-y-4">
+            <div class="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Reset Semua Jawaban?</h3>
+            <p class="text-xs text-slate-500">Semua progres dan jawaban 40 soal yang sudah tersimpan akan dihapus dari awal.</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
+                    Batal
+                </button>
+                <button onclick="confirmResetAction()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition shadow-md">
+                    Ya, Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-4 text-center text-xs border-t border-slate-800 mt-6">
+        <p class="font-semibold text-slate-300">Kuis Matematika SD Kelas 5 - Terstruktur 40 Soal Pecahan</p>
+    </footer>
+
+    <script>
+        // Array 40 Soal Terurut
+        const quizData = [
+            // ==========================================
+            // KELOMPOK 1: SOAL LANGSUNG - PECAHAN BIASA (1-17)
+            // ==========================================
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span> + <span class="frac"><span class="top">2</span><span class="bottom">5</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">8</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">15</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">15</span></span>', isCorrect: false }
+                ],
+                explanation: "Cara Kupu-Kupu / KPK (15): (1×5 + 2×3) / 15 = (5 + 6) / 15 = <strong>11/15</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">3</span><span class="bottom">4</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">12</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">1</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">12</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">4</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 4 dan 3 adalah 12. (3×3 - 1×4) / 12 = (9 - 4) / 12 = <strong>5/12</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">4</span><span class="bottom">5</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">10</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">10</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">5</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 5 dan 2 adalah 10. (4×2 - 1×5) / 10 = (8 - 5) / 10 = <strong>3/10</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">3</span><span class="bottom">7</span></span> + <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">9</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">14</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">13</span><span class="bottom">14</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">14</span></span>', isCorrect: false }
+                ],
+                explanation: "Cara Kupu-Kupu: (3×2 + 1×7) / (7×2) = (6 + 7) / 14 = <strong>13/14</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">5</span><span class="bottom">7</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">4</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">8</span><span class="bottom">21</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">21</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">7</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 7 dan 3 adalah 21. (5×3 - 1×7) / 21 = (15 - 7) / 21 = <strong>8/21</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">2</span><span class="bottom">9</span></span> + <span class="frac"><span class="top">1</span><span class="bottom">6</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">18</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">18</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK dari 9 dan 6 adalah 18. (2×2 + 1×3) / 18 = (4 + 3) / 18 = <strong>7/18</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">5</span><span class="bottom">8</span></span> + <span class="frac"><span class="top">1</span><span class="bottom">6</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">19</span><span class="bottom">24</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">14</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">17</span><span class="bottom">24</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">4</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 8 dan 6 adalah 24. 5/8 = 15/24 dan 1/6 = 4/24. Hasil = 15/24 + 4/24 = <strong>19/24</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">7</span><span class="bottom">9</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">7</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">18</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">18</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 9 dan 2 adalah 18. (7×2 - 1×9) / 18 = (14 - 9) / 18 = <strong>5/18</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">4</span><span class="bottom">9</span></span> + <span class="frac"><span class="top">2</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">12</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">8</span><span class="bottom">9</span></span>', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">2</span><span class="bottom">9</span></span>', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">9</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK 9 dan 3 adalah 9. 2/3 = 6/9. Maka 4/9 + 6/9 = 10/9 = <strong>1 1/9</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">5</span><span class="bottom">6</span></span> - <span class="frac"><span class="top">3</span><span class="bottom">10</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">4</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">8</span><span class="bottom">15</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">30</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK dari 6 dan 10 adalah 30. (25/30 - 9/30) = 16/30. Disederhanakan dibagi 2 menjadi <strong>8/15</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">3</span><span class="bottom">10</span></span> + <span class="frac"><span class="top">2</span><span class="bottom">5</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">10</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">9</span><span class="bottom">10</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK 10 dan 5 adalah 10. Ubah 2/5 menjadi 4/10. Hasil = 3/10 + 4/10 = <strong>7/10</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">8</span><span class="bottom">15</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">12</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">5</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK 15 dan 3 adalah 15. 1/3 = 5/15. Maka 8/15 - 5/15 = 3/15. Disederhanakan dibagi 3 menjadi <strong>1/5</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">1</span><span class="bottom">6</span></span> + <span class="frac"><span class="top">3</span><span class="bottom">8</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">14</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">24</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">13</span><span class="bottom">24</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK dari 6 dan 8 adalah 24. 1/6 = 4/24 dan 3/8 = 9/24. Hasil = 4/24 + 9/24 = <strong>13/24</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">3</span><span class="bottom">8</span></span> + <span class="frac"><span class="top">2</span><span class="bottom">5</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">13</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">27</span><span class="bottom">40</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">31</span><span class="bottom">40</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">5</span></span>', isCorrect: false }
+                ],
+                explanation: "Cara Kupu-Kupu: (3×5 + 2×8) / (8×5) = (15 + 16) / 40 = <strong>31/40</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">7</span><span class="bottom">12</span></span> - <span class="frac"><span class="top">1</span><span class="bottom">4</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">8</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">4</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">12</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK 12 dan 4 adalah 12. 1/4 = 3/12. Hasil = 7/12 - 3/12 = 4/12. Disederhanakan dibagi 4 menjadi <strong>1/3</strong>."
+            },
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">4</span><span class="bottom">15</span></span> + <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">18</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">5</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK 15 dan 3 adalah 15. 1/3 = 5/15. Hasil = 4/15 + 5/15 = 9/15. Disederhanakan dibagi 3 menjadi <strong>3/5</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Biasa",
+                qHtml: '<span class="frac"><span class="top">9</span><span class="bottom">14</span></span> - <span class="frac"><span class="top">3</span><span class="bottom">7</span></span>',
+                options: [
+                    { text: '<span class="frac"><span class="top">6</span><span class="bottom">7</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">14</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">14</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK 14 dan 7 adalah 14. 3/7 = 6/14. Maka 9/14 - 6/14 = <strong>3/14</strong>."
+            },
+
+            // ==========================================
+            // KELOMPOK 2: SOAL LANGSUNG - PECAHAN CAMPURAN (18-21)
+            // ==========================================
+            {
+                type: "Soal Langsung - Penjumlahan Pecahan Campuran",
+                qHtml: '1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> + 2 <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">2</span><span class="bottom">5</span></span>', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">3</span><span class="bottom">6</span></span>', isCorrect: false },
+                    { text: '4 <span class="frac"><span class="top">1</span><span class="bottom">6</span></span>', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">5</span><span class="bottom">6</span></span>', isCorrect: true }
+                ],
+                explanation: "Kelompokkan bilangan bulat dan pecahan: (1 + 2) + (1/2 + 1/3) = 3 + (3/6 + 2/6) = <strong>3 5/6</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Campuran",
+                qHtml: '3 <span class="frac"><span class="top">3</span><span class="bottom">5</span></span> - 1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>',
+                options: [
+                    { text: '2 <span class="frac"><span class="top">2</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">10</span></span>', isCorrect: true },
+                    { text: '1 <span class="frac"><span class="top">4</span><span class="bottom">5</span></span>', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">5</span></span>', isCorrect: false }
+                ],
+                explanation: "3 3/5 - 1 1/2 = 18/5 - 3/2 = (36 - 15) / 10 = 21/10 = <strong>2 1/10</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Campuran",
+                qHtml: '4 <span class="frac"><span class="top">2</span><span class="bottom">3</span></span> - 1 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span>',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">1</span><span class="bottom">12</span></span>', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">5</span><span class="bottom">12</span></span>', isCorrect: true },
+                    { text: '3 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">7</span><span class="bottom">12</span></span>', isCorrect: false }
+                ],
+                explanation: "4 2/3 - 1 1/4 = (4 - 1) + (8/12 - 3/12) = <strong>3 5/12</strong>."
+            },
+            {
+                type: "Soal Langsung - Pengurangan Pecahan Campuran",
+                qHtml: '5 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> - 2 <span class="frac"><span class="top">2</span><span class="bottom">3</span></span>',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">1</span><span class="bottom">6</span></span>', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">5</span><span class="bottom">6</span></span>', isCorrect: true },
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">5</span><span class="bottom">6</span></span>', isCorrect: false }
+                ],
+                explanation: "5 1/2 - 2 2/3 = 11/2 - 8/3 = (33 - 16) / 6 = 17/6 = <strong>2 5/6</strong>."
+            },
+
+            // ==========================================
+            // KELOMPOK 3: SOAL CERITA - PECAHAN BIASA (22-35)
+            // ==========================================
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Ibu membeli <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kg gula pasir dan <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kg tepung terigu. Berapa kg total berat belanjaan Ibu?',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">6</span></span> kg', isCorrect: false },
+                    { text: '1 kg', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> kg', isCorrect: true },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kg', isCorrect: false }
+                ],
+                explanation: "KPK 2 dan 4 adalah 4. 1/2 + 3/4 = 2/4 + 3/4 = 5/4 = <strong>1 1/4 kg</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Budi memiliki pita sepanjang <span class="frac"><span class="top">5</span><span class="bottom">6</span></span> meter. Pita tersebut dipotong <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> meter untuk mengikat kado. Sisa pita Budi adalah...',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">4</span></span> m', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">3</span></span> m', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">6</span></span> m', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">3</span></span> m', isCorrect: false }
+                ],
+                explanation: "KPK 6 dan 2 adalah 6. 5/6 - 1/2 = 5/6 - 3/6 = 2/6. Disederhanakan menjadi <strong>1/3 meter</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Ani membawa piza <span class="frac"><span class="top">2</span><span class="bottom">5</span></span> bagian, sedangkan Dini membawa <span class="frac"><span class="top">3</span><span class="bottom">10</span></span> bagian. Jika digabungkan, berapa bagian piza seluruhnya?',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">5</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">10</span></span>', isCorrect: true }
+                ],
+                explanation: "KPK 5 dan 10 adalah 10. Ubah 2/5 menjadi 4/10. Maka 4/10 + 3/10 = <strong>7/10 bagian</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Rina meminum <span class="frac"><span class="top">2</span><span class="bottom">3</span></span> liter air di pagi hari dan <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> liter di sore hari. Berapa liter total air yang diminum Rina?',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">7</span></span> liter', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">12</span></span> liter', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">5</span><span class="bottom">12</span></span> liter', isCorrect: true },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> liter', isCorrect: false }
+                ],
+                explanation: "KPK 3 dan 4 adalah 12. 2/3 + 3/4 = 8/12 + 9/12 = 17/12 = <strong>1 5/12 liter</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Ahmad memakan <span class="frac"><span class="top">3</span><span class="bottom">8</span></span> bagian kue, sedangkan Siti memakan <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> bagian kue. Berapa selisih bagian kue yang dimakan Ahmad dan Siti?',
+                options: [
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">8</span></span> bagian', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">4</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">4</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">16</span></span> bagian', isCorrect: false }
+                ],
+                explanation: "KPK 8 dan 4 adalah 8. 3/8 - 1/4 = 3/8 - 2/8 = <strong>1/8 bagian</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Pak Tani menanam jagung di <span class="frac"><span class="top">1</span><span class="bottom">3</span></span> luas lahannya dan padi di <span class="frac"><span class="top">2</span><span class="bottom">5</span></span> luas lahannya. Berapa bagian total lahan yang sudah ditanami?',
+                options: [
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">8</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">8</span><span class="bottom">15</span></span>', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">15</span></span>', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">5</span></span>', isCorrect: false }
+                ],
+                explanation: "KPK 3 dan 5 adalah 15. 1/3 + 2/5 = 5/15 + 6/15 = <strong>11/15 bagian</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Edo mempunyai jus jeruk <span class="frac"><span class="top">7</span><span class="bottom">10</span></span> liter. Jus diminum adiknya sebanyak <span class="frac"><span class="top">2</span><span class="bottom">5</span></span> liter. Sisa jus jeruk Edo adalah...',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">5</span></span> liter', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span> liter', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">10</span></span> liter', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">10</span></span> liter', isCorrect: true }
+                ],
+                explanation: "KPK 10 dan 5 adalah 10. 2/5 = 4/10. Maka 7/10 - 4/10 = <strong>3/10 liter</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Pekerja mengecat <span class="frac"><span class="top">4</span><span class="bottom">7</span></span> bagian dinding pada pagi hari dan <span class="frac"><span class="top">1</span><span class="bottom">3</span></span> bagian pada sore hari. Berapa selisih bagian dinding yang dicat?',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">21</span></span> bagian', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">4</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">21</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">7</span></span> bagian', isCorrect: false }
+                ],
+                explanation: "KPK 7 dan 3 adalah 21. (4×3 - 1×7) / 21 = (12 - 7) / 21 = <strong>5/21 bagian</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Siska mempunyai pita sepanjang <span class="frac"><span class="top">3</span><span class="bottom">5</span></span> meter dan Santi mempunyai pita <span class="frac"><span class="top">2</span><span class="bottom">3</span></span> meter. Berapa panjang gabungan pita mereka?',
+                options: [
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">8</span></span> m', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">2</span><span class="bottom">15</span></span> m', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">4</span><span class="bottom">15</span></span> m', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">15</span></span> m', isCorrect: false }
+                ],
+                explanation: "Cara Kupu-Kupu: (3×3 + 2×5) / 15 = (9 + 10) / 15 = 19/15 = <strong>1 4/15 meter</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Bu Maria membeli <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kg telur. Sebanyak <span class="frac"><span class="top">1</span><span class="bottom">6</span></span> kg digunakan untuk kue. Sisa telur Bu Maria adalah...',
+                options: [
+                    { text: '<span class="frac"><span class="top">7</span><span class="bottom">12</span></span> kg', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">2</span></span> kg', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">12</span></span> kg', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kg', isCorrect: false }
+                ],
+                explanation: "KPK 4 dan 6 adalah 12. 3/4 = 9/12 dan 1/6 = 2/12. Hasil = 9/12 - 2/12 = <strong>7/12 kg</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Dito berlari <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> km di pagi hari dan <span class="frac"><span class="top">3</span><span class="bottom">5</span></span> km di sore hari. Berapa total jarak yang ditempuh Dito?',
+                options: [
+                    { text: '<span class="frac"><span class="top">4</span><span class="bottom">7</span></span> km', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">9</span><span class="bottom">10</span></span> km', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">1</span><span class="bottom">10</span></span> km', isCorrect: true },
+                    { text: '1 <span class="frac"><span class="top">3</span><span class="bottom">10</span></span> km', isCorrect: false }
+                ],
+                explanation: "KPK 2 dan 5 adalah 10. 1/2 + 3/5 = 5/10 + 6/10 = 11/10 = <strong>1 1/10 km</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Kolam berisi <span class="frac"><span class="top">9</span><span class="bottom">10</span></span> bagian air. Berkurang <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> bagian karena terpakai. Berapa sisa air di kolam?',
+                options: [
+                    { text: '<span class="frac"><span class="top">8</span><span class="bottom">8</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">2</span><span class="bottom">5</span></span> bagian', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">10</span></span> bagian', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">1</span><span class="bottom">2</span></span> bagian', isCorrect: false }
+                ],
+                explanation: "KPK 10 dan 2 adalah 10. 9/10 - 5/10 = 4/10. Disederhanakan dibagi 2 menjadi <strong>2/5 bagian</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Biasa",
+                qHtml: 'Kebun Pak RT seluas <span class="frac"><span class="top">4</span><span class="bottom">5</span></span> hektar. Sebanyak <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> hektar ditanami singkong. Berapa hektar sisa kebun yang belum ditanami?',
+                options: [
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">20</span></span> hektar', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">1</span></span> hektar', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">9</span><span class="bottom">20</span></span> hektar', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">5</span></span> hektar', isCorrect: false }
+                ],
+                explanation: "KPK 5 dan 4 adalah 20. (4×4 - 1×5) / 20 = (16 - 5) / 20 = <strong>11/20 hektar</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Biasa",
+                qHtml: 'Botol berisi <span class="frac"><span class="top">2</span><span class="bottom">7</span></span> liter sirup, lalu dituangkan lagi <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> liter air. Berapa liter jumlah campuran minuman tersebut?',
+                options: [
+                    { text: '<span class="frac"><span class="top">3</span><span class="bottom">9</span></span> liter', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">9</span><span class="bottom">14</span></span> liter', isCorrect: false },
+                    { text: '<span class="frac"><span class="top">11</span><span class="bottom">14</span></span> liter', isCorrect: true },
+                    { text: '<span class="frac"><span class="top">5</span><span class="bottom">14</span></span> liter', isCorrect: false }
+                ],
+                explanation: "Cara Kupu-Kupu: (2×2 + 1×7) / (7×2) = (4 + 7) / 14 = <strong>11/14 liter</strong>."
+            },
+
+            // ==========================================
+            // KELOMPOK 4: SOAL CERITA - PECAHAN CAMPURAN (36-40)
+            // ==========================================
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Campuran",
+                qHtml: 'Pak Doni memasok 4 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kuintal beras. Hari ini terjual 2 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> kuintal. Berapa kuintal sisa beras Pak Doni?',
+                options: [
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> kuintal', isCorrect: true },
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kuintal', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kuintal', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kuintal', isCorrect: false }
+                ],
+                explanation: "4 1/2 - 2 1/4 = (4 - 2) + (2/4 - 1/4) = <strong>2 1/4 kuintal</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Campuran",
+                qHtml: 'Sebuah resep membutuhkan 2 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> cangkir susu dan 1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> cangkir krim. Berapa total cangkir bahan cair seluruhnya?',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">2</span><span class="bottom">6</span></span> cangkir', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> cangkir', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> cangkir', isCorrect: true },
+                    { text: '4 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> cangkir', isCorrect: false }
+                ],
+                explanation: "2 1/4 + 1 1/2 = 2 1/4 + 1 2/4 = (2+1) + (1/4+2/4) = <strong>3 3/4 cangkir</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Campuran",
+                qHtml: 'Paman membeli 1 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> liter minyak goreng, lalu membeli lagi 2 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> liter. Berapa liter total minyak goreng Paman?',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">4</span><span class="bottom">6</span></span> liter', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> liter', isCorrect: false },
+                    { text: '4 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> liter', isCorrect: false },
+                    { text: '4 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> liter', isCorrect: true }
+                ],
+                explanation: "1 1/2 + 2 3/4 = 1 2/4 + 2 3/4 = 3 5/4 = 3 + 1 1/4 = <strong>4 1/4 liter</strong>."
+            },
+            {
+                type: "Soal Cerita - Pengurangan Pecahan Campuran",
+                qHtml: 'Persediaan beras di dapur 5 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kg. Dimasak untuk acara 3 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kg. Berapa kg sisa beras?',
+                options: [
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> kg', isCorrect: true },
+                    { text: '2 <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> kg', isCorrect: false },
+                    { text: '1 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kg', isCorrect: false },
+                    { text: '2 <span class="frac"><span class="top">2</span><span class="bottom">4</span></span> kg', isCorrect: false }
+                ],
+                explanation: "5 3/4 - 3 1/2 = 5 3/4 - 3 2/4 = (5-3) + (3/4-2/4) = <strong>2 1/4 kg</strong>."
+            },
+            {
+                type: "Soal Cerita - Penjumlahan Pecahan Campuran",
+                qHtml: 'Ayah membeli 2 <span class="frac"><span class="top">1</span><span class="bottom">3</span></span> kg apel dan Ibu membeli 1 <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> kg jeruk. Berapa kg total buah yang dibeli?',
+                options: [
+                    { text: '3 <span class="frac"><span class="top">4</span><span class="bottom">7</span></span> kg', isCorrect: false },
+                    { text: '3 <span class="frac"><span class="top">11</span><span class="bottom">12</span></span> kg', isCorrect: false },
+                    { text: '4 <span class="frac"><span class="top">1</span><span class="bottom">12</span></span> kg', isCorrect: true },
+                    { text: '4 <span class="frac"><span class="top">5</span><span class="bottom">12</span></span> kg', isCorrect: false }
+                ],
+                explanation: "2 1/3 + 1 3/4 = 2 4/12 + 1 9/12 = 3 13/12 = 3 + 1 1/12 = <strong>4 1/12 kg</strong>."
+            }
+        ];
+
+        // Storage Keys
+        const STORAGE_KEY_ANSWERS = "sd5_quiz_40soal_answers_v2";
+        const STORAGE_KEY_CURRENT = "sd5_quiz_40soal_current_idx_v2";
+
+        // Global Variables
+        let currentIdx = 0;
+        let userAnswers = {}; // { index: chosenOptionIndex }
+
+        // DOM Element Cache
+        const navGridEl = document.getElementById('nav-grid');
+        const questionBadgeEl = document.getElementById('question-badge');
+        const questionTypeTagEl = document.getElementById('question-type-tag');
+        const promptSubtitleEl = document.getElementById('prompt-subtitle');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const explanationBoxEl = document.getElementById('explanation-box');
+        const statAnsweredEl = document.getElementById('stat-answered');
+        const statScoreEl = document.getElementById('stat-score');
+        const topProgressBarEl = document.getElementById('top-progress-bar');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function initApp() {
+            loadState();
+            renderNavGrid();
+            renderQuestion();
+            updateStats();
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY_ANSWERS, JSON.stringify(userAnswers));
+                localStorage.setItem(STORAGE_KEY_CURRENT, currentIdx.toString());
+                
+                const statusEl = document.getElementById('save-status');
+                statusEl.innerText = "Tersimpan Otomatis";
+            } catch (e) {
+                console.error("Local storage fail", e);
+            }
+        }
+
+        function loadState() {
+            try {
+                const savedAnswers = localStorage.getItem(STORAGE_KEY_ANSWERS);
+                if (savedAnswers) {
+                    userAnswers = JSON.parse(savedAnswers);
+                }
+                const savedIdx = localStorage.getItem(STORAGE_KEY_CURRENT);
+                if (savedIdx !== null) {
+                    currentIdx = parseInt(savedIdx, 10);
+                    if (isNaN(currentIdx) || currentIdx < 0 || currentIdx >= quizData.length) {
+                        currentIdx = 0;
+                    }
+                }
+            } catch (e) {
+                userAnswers = {};
+                currentIdx = 0;
+            }
+        }
+
+        function renderNavGrid() {
+            navGridEl.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = getNavBtnClass(i);
+                btn.innerText = i + 1;
+                btn.onclick = () => goToQuestion(i);
+                navGridEl.appendChild(btn);
+            }
+        }
+
+        function getNavBtnClass(idx) {
+            const isCurrent = idx === currentIdx;
+            const hasAnswered = userAnswers.hasOwnProperty(idx);
+            
+            let base = "w-8 h-8 rounded-lg font-bold text-xs transition flex items-center justify-center ";
+
+            if (isCurrent) {
+                base += "ring-2 ring-indigo-600 ring-offset-1 ";
+            }
+
+            if (hasAnswered) {
+                const chosenIdx = userAnswers[idx];
+                const isCorrect = quizData[idx].options[chosenIdx].isCorrect;
+                if (isCorrect) {
+                    return base + "bg-emerald-500 text-white shadow-sm";
+                } else {
+                    return base + "bg-rose-500 text-white shadow-sm";
+                }
+            } else {
+                return base + "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200";
+            }
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentIdx];
+            
+            questionBadgeEl.innerHTML = `<i class="fa-solid fa-list-check"></i> Soal Nomor ${currentIdx + 1} dari ${quizData.length}`;
+            questionTypeTagEl.innerText = q.type;
+            
+            if (q.type.includes("Cerita")) {
+                promptSubtitleEl.innerHTML = 'Bacalah cerita dengan saksama dan pilih jawaban dalam <strong class="text-indigo-600">bentuk paling sederhana</strong>:';
+            } else {
+                promptSubtitleEl.innerHTML = 'Hitunglah dan pilih jawaban dalam <strong class="text-indigo-600">bentuk paling sederhana</strong>:';
+            }
+
+            questionTextEl.innerHTML = q.qHtml;
+
+            // Render Options
+            optionsContainerEl.innerHTML = '';
+            const hasAnswered = userAnswers.hasOwnProperty(currentIdx);
+            const chosenIdx = hasAnswered ? userAnswers[currentIdx] : null;
+
+            const labels = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((opt, optIdx) => {
+                const btn = document.createElement('button');
+                btn.disabled = hasAnswered;
+
+                let optClass = "p-4 rounded-2xl border-2 text-left font-bold transition flex items-center justify-between text-base sm:text-lg ";
+
+                if (hasAnswered) {
+                    if (opt.isCorrect) {
+                        optClass += "bg-emerald-50 border-emerald-500 text-emerald-900 ";
+                    } else if (optIdx === chosenIdx && !opt.isCorrect) {
+                        optClass += "bg-rose-50 border-rose-500 text-rose-900 ";
+                    } else {
+                        optClass += "bg-slate-50 border-slate-200 text-slate-400 opacity-60 ";
+                    }
+                } else {
+                    optClass += "bg-white border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-slate-800 shadow-sm ";
+                }
+
+                btn.className = optClass;
+
+                let badgeColor = "bg-slate-100 text-slate-700";
+                if (hasAnswered) {
+                    if (opt.isCorrect) badgeColor = "bg-emerald-500 text-white";
+                    else if (optIdx === chosenIdx) badgeColor = "bg-rose-500 text-white";
+                }
+
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-xl ${badgeColor} flex items-center justify-center text-xs font-black shrink-0">
+                            ${labels[optIdx]}
+                        </span>
+                        <span>${opt.text}</span>
+                    </div>
+                    ${hasAnswered && opt.isCorrect ? '<i class="fa-solid fa-circle-check text-emerald-600 text-xl ml-2"></i>' : ''}
+                    ${hasAnswered && optIdx === chosenIdx && !opt.isCorrect ? '<i class="fa-solid fa-circle-xmark text-rose-600 text-xl ml-2"></i>' : ''}
+                `;
+
+                btn.onclick = () => selectAnswer(optIdx);
+                optionsContainerEl.appendChild(btn);
+            });
+
+            if (hasAnswered) {
+                const isCorrect = q.options[chosenIdx].isCorrect;
+                explanationBoxEl.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-rose-50', 'border-rose-200', 'text-rose-900');
+
+                if (isCorrect) {
+                    explanationBoxEl.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900');
+                    explanationBoxEl.innerHTML = `
+                        <div class="font-bold flex items-center gap-1.5 text-emerald-700 text-sm">
+                            <i class="fa-solid fa-circle-check"></i> Jawaban Kamu Benar! Tepat Sekali!
+                        </div>
+                        <p class="mt-1 leading-relaxed">${q.explanation}</p>
+                    `;
+                } else {
+                    explanationBoxEl.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-900');
+                    explanationBoxEl.innerHTML = `
+                        <div class="font-bold flex items-center gap-1.5 text-rose-700 text-sm">
+                            <i class="fa-solid fa-circle-xmark"></i> Jawaban Belum Tepat!
+                        </div>
+                        <p class="mt-1 leading-relaxed"><strong>Pembahasan Lengkap:</strong> ${q.explanation}</p>
+                    `;
+                }
+            } else {
+                explanationBoxEl.classList.add('hidden');
+            }
+
+            // Update Navigation Button States
+            btnPrev.disabled = currentIdx === 0;
+            btnPrev.style.opacity = currentIdx === 0 ? "0.5" : "1";
+
+            if (currentIdx === quizData.length - 1) {
+                btnNext.innerHTML = `<span>Selesai & Rekap</span> <i class="fa-solid fa-flag-checkered"></i>`;
+            } else {
+                btnNext.innerHTML = `<span>Selanjutnya</span> <i class="fa-solid fa-arrow-right"></i>`;
+            }
+
+            renderNavGrid();
+        }
+
+        function selectAnswer(optIdx) {
+            if (userAnswers.hasOwnProperty(currentIdx)) return;
+
+            userAnswers[currentIdx] = optIdx;
+            saveState();
+            renderQuestion();
+            updateStats();
+        }
+
+        function goToQuestion(idx) {
+            if (idx >= 0 && idx < quizData.length) {
+                currentIdx = idx;
+                saveState();
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                saveState();
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) {
+                currentIdx++;
+                saveState();
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function updateStats() {
+            const answeredCount = Object.keys(userAnswers).length;
+            let correctCount = 0;
+
+            Object.keys(userAnswers).forEach(idxStr => {
+                const qIdx = parseInt(idxStr, 10);
+                const chosenIdx = userAnswers[qIdx];
+                if (quizData[qIdx].options[chosenIdx].isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const score = Math.round((correctCount / quizData.length) * 100);
+
+            statAnsweredEl.innerText = `${answeredCount} / ${quizData.length}`;
+            statScoreEl.innerText = score;
+
+            const pct = Math.round((answeredCount / quizData.length) * 100);
+            topProgressBarEl.style.width = `${pct}%`;
+        }
+
+        function finishQuiz() {
+            const answeredCount = Object.keys(userAnswers).length;
+            let correctCount = 0;
+
+            Object.keys(userAnswers).forEach(idxStr => {
+                const qIdx = parseInt(idxStr, 10);
+                const chosenIdx = userAnswers[qIdx];
+                if (quizData[qIdx].options[chosenIdx].isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = answeredCount - correctCount;
+            const finalScore = Math.round((correctCount / quizData.length) * 100);
+
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('final-correct').innerText = correctCount;
+            document.getElementById('final-wrong').innerText = wrongCount;
+
+            const iconEl = document.getElementById('result-icon');
+            const titleEl = document.getElementById('result-title');
+            const msgEl = document.getElementById('result-message');
+
+            if (finalScore >= 85) {
+                iconEl.className = "fa-solid fa-crown text-yellow-500";
+                titleEl.innerText = "Sangat Luar Biasa! Master Pecahan! ⭐⭐⭐";
+                msgEl.innerText = `Hebat sekali! Kamu berhasil menjawab ${correctCount} dari ${quizData.length} soal dengan tepat! Kamu sudah sangat menguasai konsep pecahan!`;
+            } else if (finalScore >= 65) {
+                iconEl.className = "fa-solid fa-star text-amber-500";
+                titleEl.innerText = "Hasil Memuaskan! ⭐⭐";
+                msgEl.innerText = `Bagus! Kamu menjawab ${correctCount} soal benar. Tingkatkan ketelitian saat menyamakan penyebut pecahan ya!`;
+            } else {
+                iconEl.className = "fa-solid fa-heart-pulse text-indigo-500";
+                titleEl.innerText = "Tetap Semangat Belajar! ⭐";
+                msgEl.innerText = `Kamu telah menyelesaikan ${answeredCount} soal. Buka kembali soal yang berwarna merah untuk membaca pembahasan langkah demi langkah.`;
+            }
+
+            document.getElementById('results-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('results-modal').classList.add('hidden');
+        }
+
+        function promptResetQuiz() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function confirmResetAction() {
+            closeResetModal();
+            resetQuiz();
+        }
+
+        function resetQuiz() {
+            localStorage.removeItem(STORAGE_KEY_ANSWERS);
+            localStorage.removeItem(STORAGE_KEY_CURRENT);
+            userAnswers = {};
+            currentIdx = 0;
+            closeModal();
+            initApp();
+        }
+
+        // Initialize on Window Load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
